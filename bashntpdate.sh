@@ -1,15 +1,15 @@
 #!/bin/bash
 ## BASH NTP Date Log
+# bashntpdate.sh
 # Enquires for NTP server response sequentially with resume function.
 # bashntpdate.sh script
 # Professor. Damian A. James Williamson Grad.
 # Source Code produced by Willtech 2025
-# v1.0 hand coded by HRjJ
+# v1.1 hand coded by HRjJ
 
 trap 'echo "User tried to escape ^C"; wait' INT
 
 #Setup
-furstrun=1
 logfile="bashntpdate.log"
 
 
@@ -25,7 +25,7 @@ date -u +"%H:%M:%S %A %d/%b/%Y +0000h")
 ##Exit Handler
 Exit_handler() {
 	echo "CTRL+C received."
-	echo "" >> $logfile 
+	echo "" >> $logfile
 	"${newdate[@]} Resume Save" >> $logfile
 	echo $i.$j.$k.$l >> $logfile
 	echo "Progress is logged."
@@ -47,6 +47,7 @@ if [[ -w $logfile ]]; then
                 do
                         octet[$octetpos]=$[addr] ; octetpos=$((octetpos+1))
                         echo "> [$addr]"
+			firstrun=1
                 done
 
         else
@@ -56,15 +57,22 @@ if [[ -w $logfile ]]; then
         fi
 
 else
-	echo "" > $logfile
+	echo "0.0.0.0" > $logfile
 fi
 
 #Main
 trap 'echo ""; trap " " SIGINT SIGTERM SIGHUP; kill 0; wait; Exit_handler' SIGINT SIGTERM SIGHUP
-for ((i="${octet[0]:-0}";i<=255;i++)); do
-	for ((j="${octet[1]:-0}";j<=255;j++)); do
-		for ((k="${octet[2]:-0}";k<=255;k++)); do
-			for ((l="${octet[3]:-0}";l<=255;l++)); do
+for ((i=0;i<=255;i++)); do
+	for ((j=0;j<=255;j++)); do
+		for ((k=0;k<=255;k++)); do
+			for ((l=0;l<=255;l++)); do
+				if [[ "${firstrun}" == 1 ]]; then
+					i="${octet[0]}"
+					j="${octet[1]}"
+					k="${octet[2]}"
+					l="${octet[3]}"
+					firstrun=0
+				fi
 				echo "ntpdate -q $i.$j.$k.$l"
 				output=$(ntpdate -q $i.$j.$k.$l 2>&1)
 				if [[ $? = 0 ]]; then
