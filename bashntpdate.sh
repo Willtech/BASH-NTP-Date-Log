@@ -5,7 +5,7 @@
 # bashntpdate.sh script
 # Professor. Damian A. James Williamson Grad.
 # Source Code produced by Willtech 2025
-# v1.1 hand coded by HRjJ
+# v1.1 hand coded by HRjJ#
 
 trap 'echo "User tried to escape ^C"; wait' INT
 
@@ -52,7 +52,7 @@ if [[ -w $logfile ]]; then
 
         else
                 cat $logfile
-                echo "Lofile at $[logfile] failed to record valid IP"
+                echo "Logfile at $logfile failed to record valid IP"
                 exit 0
         fi
 
